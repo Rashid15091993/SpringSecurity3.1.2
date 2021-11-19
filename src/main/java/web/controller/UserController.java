@@ -1,30 +1,83 @@
 package web.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import web.model.User;
+import web.service.RoleService;
+import web.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/")
 public class UserController {
 
-	@RequestMapping(value = "hello", method = RequestMethod.GET)
-	public String printWelcome(ModelMap model) {
-		List<String> messages = new ArrayList<>();
-		messages.add("Hello!");
-		messages.add("I'm Spring MVC-SECURITY application");
-		messages.add("5.2.0 version by sep'19 ");
-		model.addAttribute("messages", messages);
-		return "hello";
+	private final UserService userService;
+	private final RoleService roleService;
+
+	public UserController(UserService userService, RoleService roleService) {
+		this.userService = userService;
+		this.roleService = roleService;
 	}
 
-    @RequestMapping(value = "login", method = RequestMethod.GET)
-    public String loginPage() {
-        return "login";
-    }
+	@GetMapping({"", "/", "list"})
+	public String showAllUsers(Model model, @ModelAttribute("flashMessage") String flashAttribute) {
+		model.addAttribute("users", userService.getAllUsers());
+		model.addAttribute("role", roleService.getAllRole());
+
+		return "list";
+	}
+
+	@GetMapping(value = "/new")
+	public String addUserForm(@ModelAttribute("user") User user) {
+		return "form";
+	}
+
+	@GetMapping("/{id}/edit")
+	public String edidtUserForm(@PathVariable(value = "id", required = true) long id, Model model,
+								RedirectAttributes attributes) {
+		User user = userService.readUser(id);
+
+		if (null == user) {
+			attributes.addFlashAttribute("flashMessage", "User are not exists!");
+			return "redirect:/users";
+		}
+
+		model.addAttribute("user", userService.readUser(id));
+		return "form";
+	}
+
+	@PostMapping()
+	public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
+						   RedirectAttributes attributes) {
+		if (bindingResult.hasErrors()) {
+			return "form";
+		}
+
+		userService.createOrUpdateUser(user);
+		attributes.addFlashAttribute("flashMessage",
+				"User " + user.getName() + " successfully created!");
+		return "redirect:/users";
+	}
+
+	@PatchMapping("/{id}")
+	public String update(@ModelAttribute("users") User user, @PathVariable("id") int id) {
+		userService.update(id, user);
+		return "redirect:/users";
+	}
+
+	@DeleteMapping("/{id}")
+	public String deleteUser(@PathVariable("id") long id,
+							 RedirectAttributes attributes) {
+		User user = userService.deleteUser(id);
+
+		attributes.addFlashAttribute("flashMessage", (null == user) ?
+				"User are not exists!" :
+				"User " + user.getName() + " successfully deleted!");
+
+		return "redirect:/users";
+	}
 
 }
