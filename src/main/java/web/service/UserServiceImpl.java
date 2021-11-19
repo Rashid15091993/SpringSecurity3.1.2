@@ -35,19 +35,24 @@ public class UserServiceImpl implements UserService {
             updateUser(user);
         }
     }
-
-    private void createUser(User user) {
+    @Transactional
+    @Override
+    public void createUser(User user) {
         userDao.createUser(user);
     }
 
-    private void updateUser(User user) {
+    @Transactional
+    @Override
+    public void updateUser(User user) {
         userDao.updateUser(user);
     }
+
     @Transactional
     @Override
     public User readUser(long id) {
         return userDao.readUser(id);
     }
+
     @Transactional
     @Override
     public User deleteUser(long id) {

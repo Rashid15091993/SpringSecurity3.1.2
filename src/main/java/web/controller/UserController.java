@@ -9,9 +9,8 @@ import web.model.User;
 import web.service.RoleService;
 import web.service.UserService;
 
-import javax.validation.Valid;
 
-@Controller
+@Controller("/users")
 public class UserController {
 
 	private final UserService userService;
@@ -20,6 +19,11 @@ public class UserController {
 	public UserController(UserService userService, RoleService roleService) {
 		this.userService = userService;
 		this.roleService = roleService;
+	}
+
+	@RequestMapping(value = "login", method = RequestMethod.GET)
+	public String loginPage() {
+		return "login";
 	}
 
 	@GetMapping({"", "/", "list"})
@@ -50,7 +54,7 @@ public class UserController {
 	}
 
 	@PostMapping()
-	public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
+	public String saveUser(@ModelAttribute("user") User user, BindingResult bindingResult,
 						   RedirectAttributes attributes) {
 		if (bindingResult.hasErrors()) {
 			return "form";

@@ -3,8 +3,6 @@ package web.service;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import web.model.User;
-
-import javax.validation.Valid;
 import java.util.List;
 
 public interface UserService {
@@ -15,8 +13,12 @@ public interface UserService {
 
     User deleteUser(long parseUnsignedInt);
 
-    void createOrUpdateUser(@Valid User user);
+    void createOrUpdateUser(User user);
+    void createUser(User user);
+
     void update(int id, User user);
+
+    void updateUser(User user);
 
     UserDetails getUserByUserName(String userName);
 }

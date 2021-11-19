@@ -8,49 +8,73 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import web.config.handler.SuccessUserHandler;
+import web.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	private final SuccessUserHandler successUserHandler;
-	private final UserDetailsService myUserDetailsService;
 
-	public SecurityConfig(UserDetailsService myUserDetailsService, SuccessUserHandler successUserHandler) {
-		this.myUserDetailsService = myUserDetailsService;
-		this.successUserHandler = successUserHandler;
-	}
+    private final UserDetailsServiceImpl userDetailsService;
+    private final SuccessUserHandler loginSuccessHandler;
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-				.antMatchers("/admin/**").access("hasRole('ADMIN')")
-				.antMatchers("/user/**").access("hasAnyRole('USER')")
-				.and().formLogin()  //login configuration
-				.loginPage("/customLogin.jsp")
-				.loginProcessingUrl("/appLogin")
-				.usernameParameter("username")
-				.passwordParameter("password")
-				.successHandler(successUserHandler)
-				.defaultSuccessUrl("/user")
-				.and().logout()  //logout configuration
-				.logoutUrl("/appLogout")
-				.logoutSuccessUrl("/customLogin.jsp")
-				.and().exceptionHandling() //exception handling configuration
-				.accessDeniedPage("/error");// Spring сам подставит свою логин форму
+    public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsServiceImpl userDetailsService,
+                          SuccessUserHandler loginSuccessHandler){
+        this.userDetailsService = userDetailsService;
+        this.loginSuccessHandler = loginSuccessHandler;
+    }
 
-	}
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+   /*     auth.inMemoryAuthentication()
+//                .withUser("ADMIN").password("ADMIN").roles("ADMIN");
+                .withUser("Ivan").password("ivan").roles("ADMIN");
+//                .withUser("petr").password("petr").roles("user");
+*/
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());
-	}
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.formLogin()
+                // указываем страницу с формой логина
+                //.loginPage("/login")
+                //указываем логику обработки при логине
+                .successHandler(loginSuccessHandler)
+                //
+                // указываем action с формы логина
+                .loginProcessingUrl("/login")
+                // Указываем параметры логина и пароля с формы логина
+                .usernameParameter("j_username")
+                .passwordParameter("j_password")
+                // даем доступ к форме логина всем
+                .permitAll();
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		return passwordEncoder;
-	}
+        http.logout()
+                // разрешаем делать логаут всем
+                .permitAll()
+                // указываем URL логаута
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                // указываем URL при удачном логауте
+                //.logoutSuccessUrl("/login?logout")
+                //выклчаем кроссдоменную секьюрность (на этапе обучения неважна)
+                .and().csrf().disable();
+
+        http
+                // делаем страницу регистрации недоступной для авторизированных пользователей
+                .authorizeRequests()
+                //страницы аутентификаци доступна всем
+                .antMatchers("/login").anonymous()
+                // защищенные URL
+                .antMatchers("/admin/**").access("hasAnyRole('ADMIN')")
+                .antMatchers("/user/**").access("hasAnyRole('USER')").anyRequest().authenticated();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
 }
