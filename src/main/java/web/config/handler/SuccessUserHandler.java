@@ -16,11 +16,11 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-        System.out.println("ROLE " + roles);
+
         if (roles.contains("USER")) {
-            httpServletResponse.sendRedirect("/spring_security_war/users");
+            httpServletResponse.sendRedirect("/spring_security_war/user_info");
         }else{
-            httpServletResponse.sendRedirect("/spring_security_war/hello");
+            httpServletResponse.sendRedirect("/spring_security_war/list");
         }
     }
 }

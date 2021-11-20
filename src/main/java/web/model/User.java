@@ -74,7 +74,6 @@ public class User implements UserDetails {
         for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.getRole()));
         }
-        System.out.println("UserMOD " + authorities);
 
         return authorities;
     }

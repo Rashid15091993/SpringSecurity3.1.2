@@ -6,19 +6,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import web.model.User;
-import web.service.RoleService;
 import web.service.UserService;
 
+import java.security.Principal;
 
-@Controller("/users")
+
+@Controller
 public class UserController {
 
 	private final UserService userService;
-	private final RoleService roleService;
 
-	public UserController(UserService userService, RoleService roleService) {
+	public UserController(UserService userService) {
 		this.userService = userService;
-		this.roleService = roleService;
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
@@ -29,9 +28,14 @@ public class UserController {
 	@GetMapping({"", "/", "list"})
 	public String showAllUsers(Model model, @ModelAttribute("flashMessage") String flashAttribute) {
 		model.addAttribute("users", userService.getAllUsers());
-		model.addAttribute("role", roleService.getAllRole());
 
 		return "list";
+	}
+
+	@RequestMapping(value = "/user_info", method = RequestMethod.GET)
+	@ResponseBody
+	public String currentUserName(Principal principal) {
+		return principal.getName();
 	}
 
 	@GetMapping(value = "/new")
@@ -40,7 +44,7 @@ public class UserController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String edidtUserForm(@PathVariable(value = "id", required = true) long id, Model model,
+	public String editUserForm(@PathVariable(value = "id", required = true) long id, Model model,
 								RedirectAttributes attributes) {
 		User user = userService.readUser(id);
 
@@ -63,13 +67,13 @@ public class UserController {
 		userService.createOrUpdateUser(user);
 		attributes.addFlashAttribute("flashMessage",
 				"User " + user.getName() + " successfully created!");
-		return "redirect:/users";
+		return "redirect:/list";
 	}
 
 	@PatchMapping("/{id}")
 	public String update(@ModelAttribute("users") User user, @PathVariable("id") int id) {
 		userService.update(id, user);
-		return "redirect:/users";
+		return "redirect:/list";
 	}
 
 	@DeleteMapping("/{id}")
@@ -81,7 +85,7 @@ public class UserController {
 				"User are not exists!" :
 				"User " + user.getName() + " successfully deleted!");
 
-		return "redirect:/users";
+		return "redirect:/list";
 	}
 
 }

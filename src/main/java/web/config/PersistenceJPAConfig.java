@@ -22,27 +22,11 @@ import java.util.Properties;
 @ComponentScan(value = "web")
 public class PersistenceJPAConfig {
 
-    /*@Bean
-    public UserService getUserService() {
-        return new UserServiceImpl();
-    }
-
-    @Bean
-    public UserDao getUserDao() {
-        return new UserDaoImpl();
-    }
-
-    @Bean
-    public UserDetailsServiceImpl getUserDetailsServiceImpl() {
-        return new UserDetailsServiceImpl();
-    }*/
-
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(getDataSource());
-//        em.setPackagesToScan(new String[] { "java", "java/web", "java/service", "java/model", "java/dao" });
         em.setPackagesToScan(new String[] {"web.model"});
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();

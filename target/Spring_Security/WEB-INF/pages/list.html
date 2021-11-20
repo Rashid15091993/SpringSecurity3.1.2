@@ -16,6 +16,7 @@
         </tr>
         <tr th:each ="user,rowStat : ${users}">
             <td th:width="100" th:utext="${user.getName()}">...</td>
+            <td th:width="100" th:utext="${user.getAuthorities()[0]}">...</td>
 
             <td class="col text-center">
                 <a type="button" th:href="@{/users/{id}/edit(id=${user.getId()})}" class="btn btn-secondary" th:classappend="${rowStat.count % 2 == 0 ? 'bg-light text-dark' : 'bg-secondary text-white'}">Edit</a>

@@ -1,13 +1,9 @@
 package web.service;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.dao.UserDao;
 import web.model.User;
-
 import java.util.List;
 
 @Service
@@ -26,6 +22,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         return userDao.getAllUsers();
     }
+
     @Transactional
     @Override
     public void createOrUpdateUser(User user) {
@@ -35,6 +32,7 @@ public class UserServiceImpl implements UserService {
             updateUser(user);
         }
     }
+
     @Transactional
     @Override
     public void createUser(User user) {
@@ -64,11 +62,11 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+
     @Transactional
     @Override
     public void update(int id, User user) {
         User updateuser = readUser(id);
         updateuser.setName(user.getName());
     }
-
 }
