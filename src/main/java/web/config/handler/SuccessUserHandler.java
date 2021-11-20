@@ -16,7 +16,8 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-        if (roles.contains("ROLE_USER")) {
+        System.out.println("ROLE " + roles);
+        if (roles.contains("USER")) {
             httpServletResponse.sendRedirect("/spring_security_war/users");
         }else{
             httpServletResponse.sendRedirect("/spring_security_war/hello");
