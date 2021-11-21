@@ -11,7 +11,7 @@ public interface UserService {
 
     User readUser(long id);
 
-    User deleteUser(long parseUnsignedInt);
+    void deleteUser(long parseUnsignedInt);
 
     void createOrUpdateUser(User user);
 

@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.dao.UserDao;
 import web.model.User;
+
+import javax.persistence.PersistenceException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -53,14 +56,15 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User deleteUser(long id) {
-        User user = null;
-        try {
-            user = userDao.deleteUser(id);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+    public void deleteUser(long id) {
+        Optional<User> user = Optional.ofNullable(userDao.getUserById(id));
+        if (user.isPresent()) {
+            try {
+                userDao.deleteUser(user.get());
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+            }
         }
-        return user;
     }
 
     @Transactional

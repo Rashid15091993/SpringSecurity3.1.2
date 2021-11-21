@@ -12,6 +12,7 @@ import java.security.Principal;
 
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
 	private final UserService userService;
@@ -67,25 +68,15 @@ public class UserController {
 		userService.createOrUpdateUser(user);
 		attributes.addFlashAttribute("flashMessage",
 				"User " + user.getName() + " successfully created!");
-		return "redirect:/list";
+		return "redirect:/users";
 	}
 
-	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("users") User user, @PathVariable("id") int id) {
-		userService.update(id, user);
-		return "redirect:/list";
-	}
 
-	@DeleteMapping("/{id}")
-	public String deleteUser(@PathVariable("id") long id,
-							 RedirectAttributes attributes) {
-		User user = userService.deleteUser(id);
+	@GetMapping("/{id}/delete")
+	public String deleteUser(@PathVariable("id") int userId) {
+		userService.deleteUser(userId);
 
-		attributes.addFlashAttribute("flashMessage", (null == user) ?
-				"User are not exists!" :
-				"User " + user.getName() + " successfully deleted!");
-
-		return "redirect:/list";
+		return "redirect:/users";
 	}
 
 }

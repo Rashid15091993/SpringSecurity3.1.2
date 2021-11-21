@@ -35,6 +35,21 @@
             </div>
         </div>
 
+    <div class="form-row">
+
+        <div class="col-md-6 mb-3">
+            <label for="roles">Roles</label>
+            <input type="roles" class="form-control" id="roles" th:field="*{roles}" th:value="*{getAuthorities()[0]}" placeholder="Roles" required>
+            <div th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"/>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label for="roles">Roles_id</label>
+            <input type="roles" class="form-control" id="roles2" th:field="*{roles}" th:value="*{getId()}" placeholder="Roles" required>
+            <div th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"/>
+        </div>
+    </div>
+
         <button class="btn btn-secondary" type="submit" th:text="*{getId()} ? 'Save' : 'Create'"/>
         <a class="btn btn-light border-dark" href="/users">Cancel</a>
     </form>

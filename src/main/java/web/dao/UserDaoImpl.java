@@ -48,14 +48,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User deleteUser(long id) throws NullPointerException {
-        User user = readUser(id);
-        if (null == user) {
-            throw new NullPointerException("User not found");
-        }
-        entityManager.remove(user);
-        entityManager.flush();
-        return user;
+    public void deleteUser(User user) throws NullPointerException {
+
+        entityManager.remove(entityManager.contains(user) ? user : entityManager.merge(user));
+    }
+    @Override
+    public User getUserById(long id) {
+        return entityManager.find(User.class, id);
     }
 }
 
