@@ -1,5 +1,6 @@
 package web.controller;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,14 +48,15 @@ public class UserController {
 	@GetMapping("/{id}/edit")
 	public String editUserForm(@PathVariable(value = "id", required = true) long id, Model model,
 								RedirectAttributes attributes) {
-		User user = userService.readUser(id);
+		try {
+			model.addAttribute("user", userService.readUser(id));
+		} catch (EmptyResultDataAccessException e) {
+			e.printStackTrace();
 
-		if (null == user) {
-			attributes.addFlashAttribute("flashMessage", "User are not exists!");
 			return "redirect:/users";
 		}
+		model.addAttribute("allRoles", userService.findAllRoles());
 
-		model.addAttribute("user", userService.readUser(id));
 		return "form";
 	}
 

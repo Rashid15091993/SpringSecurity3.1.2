@@ -9,10 +9,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="users")
@@ -101,6 +98,22 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean hasRole(int roleId) {
+        if (null == roles|| 0 == roles.size()) {
+            return false;
+        }
+        Optional<Role> findRole = roles.stream().filter(role -> roleId == role.getId()).findFirst();
+        return findRole.isPresent();
+    }
+
+    public boolean hasRole(String roleName) {
+        if (null == roles|| 0 == roles.size()) {
+            return false;
+        }
+        Optional<Role> findRole = roles.stream().filter(role -> roleName.equals(role.getRole())).findFirst();
+        return findRole.isPresent();
     }
 
     public void setPassword(String password) {
