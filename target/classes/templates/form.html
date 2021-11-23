@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="layouts/main :: htmlhead"></head>
 
 <body>
 
-<div th:replace="layouts/main :: navigation"></div>
 
 <div class="container">
     <div class="row">
@@ -49,6 +47,5 @@
     </form>
 </div>
 
-<div th:replace="layouts/main :: footer"></div>
 </body>
 </html>
