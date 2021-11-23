@@ -36,29 +36,16 @@
             </div>
         </div>
 
-        <div class="form-row mb-3">
-            <div class="col-md-6 mb-3">
-                <label for="role">Roles</label>
-                <div id="role">
-                    <div class="form-check form-check-inline" th:each="role : ${allRoles}">
-                        <input type="checkbox" class="form-check-input" name="roles" th:checked="${user.hasRole('__${role.role}__')}" th:id="${role.role}" th:value="${role.role}">
-                        <label class="form-check-label" th:for="${role.role}" th:text="${role.role}"/>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="enabled-row">&nbsp;</label>
-                <div id="enabled-row">
-                    <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input" name="roles" th:checked="*{isEnabled()}" id="enabled" th:field="*{enabled}">
-                        <label class="form-check-label" for="enabled">Is enabled</label>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <p> User
+            <input type="checkbox" checked="true" th:value="USER" th:name="rolesSet">
+        </p>
+        <p> Admin
+            <input type="checkbox" th:value="ADMIN" th:name="rolesSet">
+        </p>
 
-        <button class="btn btn-secondary" type="submit" th:text="*{getId()} ? 'Save' : 'Create'"/>
-        <a class="btn btn-light border-dark" href="/users">Cancel</a>
+        <a th:href="@{/(user=${user})}">
+            <button>Save!</button>
+        </a>
     </form>
 </div>
 

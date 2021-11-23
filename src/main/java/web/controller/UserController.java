@@ -6,10 +6,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import web.model.Role;
 import web.model.User;
 import web.service.UserService;
 
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Controller
@@ -55,17 +58,21 @@ public class UserController {
 
 			return "redirect:/users";
 		}
-		model.addAttribute("allRoles", userService.findAllRoles());
 
 		return "form";
 	}
 
 	@PostMapping()
 	public String saveUser(@ModelAttribute("user") User user, BindingResult bindingResult,
-						   RedirectAttributes attributes) {
+						   RedirectAttributes attributes, @RequestParam(value = "rolesSet", required = false) String[] rolesSet) {
 		if (bindingResult.hasErrors()) {
 			return "form";
 		}
+		Set<Role> roles = new HashSet<>();
+		for (String s : rolesSet){
+			roles.add(new Role(1, s));
+		}
+		user.setRoles(roles);
 
 		userService.createOrUpdateUser(user);
 		attributes.addFlashAttribute("flashMessage",
