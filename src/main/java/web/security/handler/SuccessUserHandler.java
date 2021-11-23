@@ -18,9 +18,9 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
         if (roles.contains("USER")) {
-            httpServletResponse.sendRedirect("/spring_security_war/users/user_info");
+            httpServletResponse.sendRedirect("/users/user_info");
         }else{
-            httpServletResponse.sendRedirect("/spring_security_war/users");
+            httpServletResponse.sendRedirect("/users");
         }
     }
 }
