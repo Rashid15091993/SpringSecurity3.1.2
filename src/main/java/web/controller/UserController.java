@@ -70,7 +70,7 @@ public class UserController {
 		}
 		Set<Role> roles = new HashSet<>();
 		for (String s : rolesSet){
-			roles.add(new Role(1, s));
+			roles.add(new Role(s));
 		}
 		user.setRoles(roles);
 
