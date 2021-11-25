@@ -60,7 +60,7 @@ public class AdminController {
     }
 
 
-    @GetMapping(value = "edit/{id}")
+    @GetMapping(value = "{id}edit/")
     public String editUser(ModelMap model, @PathVariable("id") Long id, Principal principal) {
         User user = userService.readUser(id);
         Set<Role> roles = user.getRoles();
