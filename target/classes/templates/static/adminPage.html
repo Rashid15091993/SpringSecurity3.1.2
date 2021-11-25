@@ -104,8 +104,47 @@
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>
                                                                 </div>
-                                                                <div class="modal-body text-center">
+                                                                <div class="modal-body text-center" >
+                                                                    <div class="form justify-content-center mx-auto col-md-3">
+                                                                        <form th:action="@{admin/edit/{id}(id=${user.getId()})}"
+                                                                              method="post">
 
+                                                                            <fieldset>
+                                                                                <!--<legend>Данные пользователя</legend>-->
+                                                                                <p>
+                                                                                    <label th:for="firsName">First name
+                                                                                        <input type="text"
+                                                                                               name="name"
+                                                                                               th:value="${user.getName()}"
+                                                                                               th:id="name">
+
+                                                                                    </label>
+                                                                                    <br/>
+
+                                                                                    <label th:for="password">Password
+                                                                                        <input type="text"
+                                                                                               name="password"
+                                                                                               th:value="${user.getPassword()}"
+                                                                                               th:id="password">
+                                                                                    </label>
+                                                                                    <br/>
+                                                                                    <label>
+                                                                                        <input type="checkbox"
+                                                                                               name="roleAdmin"
+                                                                                               th:value="ADMIN"
+                                                                                               th:text="Администратор">
+                                                                                    </label>
+                                                                                    <label>
+                                                                                        <input type="checkbox"
+                                                                                               name="roleVIP"
+                                                                                               th:value="VIP"
+                                                                                               th:text="Вип">
+                                                                                    </label>
+                                                                                </p>
+                                                                            </fieldset>
+                                                                            <button type="submit" class="btn btn-success">Edit user</button>
+                                                                        </form>
+                                                                    </div>
 
 
                                                                 </div>
@@ -136,6 +175,10 @@
                                                                     </button>
                                                                 </div>
                                                                 <div class="modal-body text-center">
+                                                                    <form th:action="@{admin/delete/{id}(id=${user.getId()})}">
+                                                                        <button type="submit" class="btn btn-success">Delete</button>
+                                                                    </form>
+
                                                                 </div>
                                                             </div>
                                                         </div>
