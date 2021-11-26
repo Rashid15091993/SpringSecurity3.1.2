@@ -72,7 +72,6 @@ public class AdminController {
                 model.addAttribute("roleVIP", true);
             }
         }
-        model.addAttribute("userDB", user);
         model.addAttribute("userThis", userService.loadUserByUsername(principal.getName()));
         return "editUser";
     }
@@ -100,7 +99,5 @@ public class AdminController {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
-
-
 
 }
